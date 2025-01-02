@@ -12,10 +12,10 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 
-from . import BestwayUpdateCoordinator
-from .bestway.model import BestwayDevice, BestwayDeviceType
+from . import WavespaUpdateCoordinator
+from .wavespa.model import WavespaDevice, WavespaDeviceType
 from .const import DOMAIN, Icon
-from .entity import BestwayEntity
+from .entity import WavespaEntity
 
 
 @dataclass
@@ -23,7 +23,7 @@ class DeviceSensorDescription:
     """An entity description with a function that describes how to derive a value."""
 
     entity_description: SensorEntityDescription
-    value_fn: Callable[[BestwayDevice], StateType]
+    value_fn: Callable[[WavespaDevice], StateType]
 
 
 async def async_setup_entry(
@@ -32,18 +32,18 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Add sensors for passed config_entry in HA."""
-    coordinator: BestwayUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
-    entities: list[BestwayEntity] = []
+    coordinator: WavespaUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    entities: list[WavespaEntity] = []
 
     for device_id, device_info in coordinator.api.devices.items():
-        name_prefix = "Bestway"
+        name_prefix = "Wavespa"
         if device_info.device_type in [
-            BestwayDeviceType.AIRJET_SPA,
-            BestwayDeviceType.HYDROJET_SPA,
-            BestwayDeviceType.HYDROJET_PRO_SPA,
+            WavespaDeviceType.AIRJET_SPA,
+            WavespaDeviceType.HYDROJET_SPA,
+            WavespaDeviceType.HYDROJET_PRO_SPA,
         ]:
             name_prefix = "Spa"
-        elif device_info.device_type == BestwayDeviceType.POOL_FILTER:
+        elif device_info.device_type == WavespaDeviceType.POOL_FILTER:
             name_prefix = "Pool Filter"
 
         entities.extend(
@@ -124,14 +124,14 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class DeviceSensor(BestwayEntity, SensorEntity):
+class DeviceSensor(WavespaEntity, SensorEntity):
     """A sensor based on device metadata."""
 
     sensor_description: DeviceSensorDescription
 
     def __init__(
         self,
-        coordinator: BestwayUpdateCoordinator,
+        coordinator: WavespaUpdateCoordinator,
         config_entry: ConfigEntry,
         device_id: str,
         sensor_description: DeviceSensorDescription,
@@ -145,6 +145,6 @@ class DeviceSensor(BestwayEntity, SensorEntity):
     @property
     def native_value(self) -> StateType:
         """Return the relevant property."""
-        if (device := self.bestway_device) is not None:
+        if (device := self.wavespa_device) is not None:
             return self.sensor_description.value_fn(device)
         return None

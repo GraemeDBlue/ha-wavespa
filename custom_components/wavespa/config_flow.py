@@ -1,4 +1,4 @@
-"""Config flow for Bestway integration."""
+"""Config flow for Wavespa integration."""
 
 from __future__ import annotations
 
@@ -15,10 +15,10 @@ from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import voluptuous as vol
 
-from .bestway.api import (
-    BestwayApi,
-    BestwayIncorrectPasswordException,
-    BestwayUserDoesNotExistException,
+from .wavespa.api import (
+    WavespaApi,
+    WavespaIncorrectPasswordException,
+    WavespaUserDoesNotExistException,
 )
 from .const import (
     CONF_API_ROOT,
@@ -59,7 +59,7 @@ async def validate_input(
     api_root = user_input[CONF_API_ROOT]
     session = async_get_clientsession(hass)
     async with asyncio.timeout(10):
-        token = await BestwayApi.get_user_token(
+        token = await WavespaApi.get_user_token(
             session, username, user_input[CONF_PASSWORD], api_root
         )
 
@@ -69,8 +69,8 @@ async def validate_input(
     return config_entry_data
 
 
-class BestwayConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for bestway."""
+class WavespaConfigFlow(ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for wavespa."""
 
     VERSION = 2
 
@@ -87,9 +87,9 @@ class BestwayConfigFlow(ConfigFlow, domain=DOMAIN):
 
         try:
             config_entry_data = await validate_input(self.hass, user_input)
-        except BestwayUserDoesNotExistException:
+        except WavespaUserDoesNotExistException:
             errors["base"] = "user_does_not_exist"
-        except BestwayIncorrectPasswordException:
+        except WavespaIncorrectPasswordException:
             errors["base"] = "incorrect_password"
         except ClientConnectionError:
             errors["base"] = "cannot_connect"

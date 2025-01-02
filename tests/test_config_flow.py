@@ -1,12 +1,12 @@
-"""Test bestway config flow."""
+"""Test wavespa config flow."""
 
 from unittest.mock import patch
 
 from homeassistant import config_entries, data_entry_flow
 import pytest
 
-from custom_components.bestway.bestway.model import BestwayUserToken
-from custom_components.bestway.const import (
+from custom_components.wavespa.wavespa.model import WavespaUserToken
+from custom_components.wavespa.const import (
     CONF_API_ROOT,
     CONF_API_ROOT_EU,
     CONF_PASSWORD,
@@ -31,7 +31,7 @@ MOCK_USER_INPUT = {
 def bypass_setup_fixture():
     """Prevent setup."""
     with patch(
-        "custom_components.bestway.async_setup_entry",
+        "custom_components.wavespa.async_setup_entry",
         return_value=True,
     ):
         yield
@@ -50,9 +50,9 @@ async def test_successful_config_flow(hass, bypass_get_data):
     assert result["step_id"] == "user"
 
     # Mock an authentication call that provides a token to keep hold of
-    token = BestwayUserToken("foo", "t0k3n", 123)
+    token = WavespaUserToken("foo", "t0k3n", 123)
     with patch(
-        "custom_components.bestway.bestway.api.BestwayApi.get_user_token",
+        "custom_components.wavespa.wavespa.api.WavespaApi.get_user_token",
         return_value=token,
     ):
         result = await hass.config_entries.flow.async_configure(

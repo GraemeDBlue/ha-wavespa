@@ -1,1 +1,1 @@
-"""Tests for bestway integration."""
+"""Tests for wavespa integration."""

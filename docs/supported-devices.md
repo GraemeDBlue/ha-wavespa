@@ -1,6 +1,6 @@
 # Supported devices
 
-Bestway devices change over time, so new devices can sometimes require changes to the integration to add support. This page attempts to keep track of how each device communicates, and the support status for each of these protocols.
+Wavespa devices change over time, so new devices can sometimes require changes to the integration to add support. This page attempts to keep track of how each device communicates, and the support status for each of these protocols.
 
 ## Known products
 
@@ -12,7 +12,7 @@ Raise an issue or log a pull request to update this list. Please do not suggest 
 | Lay-Z-Spa Maldives HydroJet Pro       | Hydrojet_Pro |
 | Lay-Z-Spa Milan AirJet Plus           | Airjet       |
 | SaluSpa Coronado EnergySense          | Airjet_V01   |
-| Bestway Smart Touch Wi-Fi Filter Pump | Pool Filter  |
+| Wavespa Smart Touch Wi-Fi Filter Pump | Pool Filter  |
 
 ## Protocol support
 

@@ -14,9 +14,9 @@ If you are not using the newest version, download and try that before opening an
 If you are unsure about the version check the const.py file.
 -->
 
-## Bestway device
+## Wavespa device
 
-Provide the model of your device. A link to the Bestway product page is sometimes useful.
+Provide the model of your device. A link to the Wavespa product page is sometimes useful.
 
 ## Describe the bug
 

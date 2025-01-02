@@ -53,7 +53,7 @@ jobs:
             --timeout=9 \
             --durations=10 \
             -n auto \
-            --cov custom_components.bestway \
+            --cov custom_components.wavespa \
             -o console_output_style=count \
             -p no:sugar \
             tests

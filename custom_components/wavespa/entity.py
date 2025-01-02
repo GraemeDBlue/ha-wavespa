@@ -6,17 +6,17 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BestwayUpdateCoordinator
-from .bestway.model import BestwayDevice, BestwayDeviceStatus
+from . import WavespaUpdateCoordinator
+from .wavespa.model import WavespaDevice, WavespaDeviceStatus
 from .const import DOMAIN
 
 
-class BestwayEntity(CoordinatorEntity[BestwayUpdateCoordinator]):
-    """Bestway base entity type."""
+class WavespaEntity(CoordinatorEntity[WavespaUpdateCoordinator]):
+    """Wavespa base entity type."""
 
     def __init__(
         self,
-        coordinator: BestwayUpdateCoordinator,
+        coordinator: WavespaUpdateCoordinator,
         config_entry: ConfigEntry,
         device_id: str,
     ) -> None:
@@ -35,19 +35,19 @@ class BestwayEntity(CoordinatorEntity[BestwayUpdateCoordinator]):
             identifiers={(DOMAIN, self.device_id)},
             name=device_info.alias,
             model=device_info.device_type.value,
-            manufacturer="Bestway",
+            manufacturer="Wavespa",
         )
 
     @property
-    def bestway_device(self) -> BestwayDevice | None:
+    def wavespa_device(self) -> WavespaDevice | None:
         """Get status data for the spa providing this entity."""
-        device: BestwayDevice | None = self.coordinator.api.devices.get(self.device_id)
+        device: WavespaDevice | None = self.coordinator.api.devices.get(self.device_id)
         return device
 
     @property
-    def status(self) -> BestwayDeviceStatus | None:
+    def status(self) -> WavespaDeviceStatus | None:
         """Get status data for the spa providing this entity."""
-        status: BestwayDeviceStatus | None = self.coordinator.data.devices.get(
+        status: WavespaDeviceStatus | None = self.coordinator.data.devices.get(
             self.device_id
         )
         return status
@@ -57,6 +57,6 @@ class BestwayEntity(CoordinatorEntity[BestwayUpdateCoordinator]):
         """Return True if entity is available."""
         return (
             self.coordinator.last_update_success
-            and self.bestway_device is not None
-            and self.bestway_device.is_online
+            and self.wavespa_device is not None
+            and self.wavespa_device.is_online
         )

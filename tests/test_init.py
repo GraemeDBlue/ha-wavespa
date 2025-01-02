@@ -1,4 +1,4 @@
-"""Test bestway setup process."""
+"""Test wavespa setup process."""
 
 from datetime import datetime, timedelta
 from unittest.mock import patch
@@ -8,14 +8,14 @@ from homeassistant.exceptions import ConfigEntryNotReady
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.bestway import (
-    BestwayUpdateCoordinator,
+from custom_components.wavespa import (
+    WavespaUpdateCoordinator,
     async_reload_entry,
     async_setup_entry,
     async_unload_entry,
 )
-from custom_components.bestway.bestway.model import BestwayUserToken
-from custom_components.bestway.const import (
+from custom_components.wavespa.wavespa.model import WavespaUserToken
+from custom_components.wavespa.const import (
     CONF_API_ROOT,
     CONF_API_ROOT_EU,
     CONF_PASSWORD,
@@ -47,16 +47,16 @@ async def test_setup_unload_and_reload_entry(hass: HomeAssistant, bypass_get_dat
     config_entry.add_to_hass(hass)
 
     # Set up the entry and assert that the values set during setup are where we expect
-    # them to be. Because we have patched the BestwayUpdateCoordinator.async_get_data
-    # call, no code from custom_components/bestway/api.py actually runs.
+    # them to be. Because we have patched the WavespaUpdateCoordinator.async_get_data
+    # call, no code from custom_components/wavespa/api.py actually runs.
     with patch(
-        "custom_components.bestway.bestway.api.BestwayApi.get_user_token"
+        "custom_components.wavespa.wavespa.api.WavespaApi.get_user_token"
     ) as get_user_token_fn:
         await hass.config_entries.async_setup(config_entry.entry_id)
 
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert isinstance(
-        hass.data[DOMAIN][config_entry.entry_id], BestwayUpdateCoordinator
+        hass.data[DOMAIN][config_entry.entry_id], WavespaUpdateCoordinator
     )
 
     # The token expires far enough in the future that a call to refresh
@@ -67,7 +67,7 @@ async def test_setup_unload_and_reload_entry(hass: HomeAssistant, bypass_get_dat
     await async_reload_entry(hass, config_entry)
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert isinstance(
-        hass.data[DOMAIN][config_entry.entry_id], BestwayUpdateCoordinator
+        hass.data[DOMAIN][config_entry.entry_id], WavespaUpdateCoordinator
     )
 
     # Unload the entry and verify that the data has been removed
@@ -94,9 +94,9 @@ async def test_setup_entry_expired_token(hass: HomeAssistant, bypass_get_data):
     )
     config_entry.add_to_hass(hass)
 
-    expected_token = BestwayUserToken(user_id="uid", user_token="new_token", expiry=123)
+    expected_token = WavespaUserToken(user_id="uid", user_token="new_token", expiry=123)
 
-    with patch("custom_components.bestway.bestway.api.BestwayApi.get_user_token") as p:
+    with patch("custom_components.wavespa.wavespa.api.WavespaApi.get_user_token") as p:
         p.return_value = expected_token
         await hass.config_entries.async_setup(config_entry.entry_id)
         p.assert_called_once()

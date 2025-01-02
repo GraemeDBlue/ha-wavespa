@@ -1,6 +1,6 @@
 {
   "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
-  "name": "bestway",
+  "name": "wavespa",
   "appPort": ["9125:8123"],
   "postCreateCommand": "scripts/setup",
   "portsAttributes": {

@@ -17,10 +17,10 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import BestwayUpdateCoordinator
-from .bestway.model import BestwayDeviceType
+from . import WavespaUpdateCoordinator
+from .wavespa.model import WavespaDeviceType
 from .const import DOMAIN, Icon
-from .entity import BestwayEntity
+from .entity import WavespaEntity
 
 _SPA_CONNECTIVITY_SENSOR_DESCRIPTION = BinarySensorEntityDescription(
     key="spa_connected",
@@ -61,15 +61,15 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up binary sensor entities."""
-    coordinator: BestwayUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
-    entities: list[BestwayEntity] = []
+    coordinator: WavespaUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    entities: list[WavespaEntity] = []
 
     for device_id, device in coordinator.api.devices.items():
         if device.device_type in [
-            BestwayDeviceType.AIRJET_SPA,
-            BestwayDeviceType.AIRJET_V01_SPA,
-            BestwayDeviceType.HYDROJET_SPA,
-            BestwayDeviceType.HYDROJET_PRO_SPA,
+            WavespaDeviceType.AIRJET_SPA,
+            WavespaDeviceType.AIRJET_V01_SPA,
+            WavespaDeviceType.HYDROJET_SPA,
+            WavespaDeviceType.HYDROJET_PRO_SPA,
         ]:
             entities.extend(
                 [
@@ -88,7 +88,7 @@ async def async_setup_entry(
                 ]
             )
 
-        if device.device_type == BestwayDeviceType.POOL_FILTER:
+        if device.device_type == WavespaDeviceType.POOL_FILTER:
             entities.extend(
                 [
                     DeviceConnectivitySensor(
@@ -112,12 +112,12 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class DeviceConnectivitySensor(BestwayEntity, BinarySensorEntity):
+class DeviceConnectivitySensor(WavespaEntity, BinarySensorEntity):
     """Sensor to indicate whether a device is currently online."""
 
     def __init__(
         self,
-        coordinator: BestwayUpdateCoordinator,
+        coordinator: WavespaUpdateCoordinator,
         config_entry: ConfigEntry,
         device_id: str,
         entity_description: BinarySensorEntityDescription,
@@ -135,7 +135,7 @@ class DeviceConnectivitySensor(BestwayEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return True if the spa is online."""
-        return self.bestway_device is not None and self.bestway_device.is_online
+        return self.wavespa_device is not None and self.wavespa_device.is_online
 
     @property
     def available(self) -> bool:
@@ -143,12 +143,12 @@ class DeviceConnectivitySensor(BestwayEntity, BinarySensorEntity):
         return self.coordinator.last_update_success
 
 
-class DeviceErrorsSensor(BestwayEntity, BinarySensorEntity):
+class DeviceErrorsSensor(WavespaEntity, BinarySensorEntity):
     """Sensor to indicate an error state for all device types."""
 
     def __init__(
         self,
-        coordinator: BestwayUpdateCoordinator,
+        coordinator: WavespaUpdateCoordinator,
         config_entry: ConfigEntry,
         device_id: str,
         entity_description: BinarySensorEntityDescription,
@@ -208,12 +208,12 @@ class DeviceErrorsSensor(BestwayEntity, BinarySensorEntity):
         return self._all_error_properties()
 
 
-class PoolFilterChangeRequiredSensor(BestwayEntity, BinarySensorEntity):
+class PoolFilterChangeRequiredSensor(WavespaEntity, BinarySensorEntity):
     """Sensor to indicate whether a pool filter requires a change."""
 
     def __init__(
         self,
-        coordinator: BestwayUpdateCoordinator,
+        coordinator: WavespaUpdateCoordinator,
         config_entry: ConfigEntry,
         device_id: str,
     ) -> None:

@@ -1,1 +1,1 @@
-"""Constants for bestway tests."""
+"""Constants for wavespa tests."""
