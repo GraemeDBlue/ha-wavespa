@@ -233,14 +233,14 @@ class WavespaApi:
 
         api_value = 1 if power else 0
         _LOGGER.debug("Setting power to %s", "ON" if power else "OFF")
-        await self._do_control_post(device_id, power=api_value)
+        await self._do_control_post(device_id, Heater=api_value)
         cached_state.timestamp = int(time())
-        cached_state.attrs["spa_power"] = api_value
+        cached_state.attrs["Heater"] = api_value
         if not power:
             # When powering off, all other functions also turn off
-            cached_state.attrs["filter_power"] = 0
-            cached_state.attrs["heat_power"] = 0
-            cached_state.attrs["wave_power"] = 0
+            cached_state.attrs["Filter"] = 0
+            cached_state.attrs["Heater"] = 0
+            cached_state.attrs["Bubble"] = 0
 
     async def airjet_spa_set_filter(self, device_id: str, filtering: bool) -> None:
         """Turn the filter pump on/off on a spa device."""
@@ -249,14 +249,14 @@ class WavespaApi:
 
         api_value = 1 if filtering else 0
         _LOGGER.debug("Setting filter mode to %s", "ON" if filtering else "OFF")
-        await self._do_control_post(device_id, filter_power=api_value)
+        await self._do_control_post(device_id, Filter=api_value)
         cached_state.timestamp = int(time())
-        cached_state.attrs["filter_power"] = api_value
+        cached_state.attrs["Filter"] = api_value
         if filtering:
-            cached_state.attrs["spa_power"] = 1
+            cached_state.attrs["Heater"] = 0
         else:
-            cached_state.attrs["wave_power"] = 0
-            cached_state.attrs["heat_power"] = 0
+            cached_state.attrs["Bubbles"] = 0
+            cached_state.attrs["Heater"] = 0
 
     async def airjet_spa_set_heat(self, device_id: str, heat: bool) -> None:
         """
@@ -269,12 +269,11 @@ class WavespaApi:
 
         api_value = 1 if heat else 0
         _LOGGER.debug("Setting heater mode to %s", "ON" if heat else "OFF")
-        await self._do_control_post(device_id, heat_power=api_value)
+        await self._do_control_post(device_id, Heater=api_value)
         cached_state.timestamp = int(time())
-        cached_state.attrs["heat_power"] = api_value
+        cached_state.attrs["Heater"] = api_value
         if heat:
-            cached_state.attrs["spa_power"] = 1
-            cached_state.attrs["filter_power"] = 1
+            cached_state.attrs["Filter"] = 1
 
     async def airjet_spa_set_target_temp(
         self, device_id: str, target_temp: int
@@ -285,20 +284,9 @@ class WavespaApi:
 
         target_temp = int(target_temp)
         _LOGGER.debug("Setting target temperature to %d", target_temp)
-        await self._do_control_post(device_id, temp_set=target_temp)
+        await self._do_control_post(device_id, Temperature_setup=target_temp)
         cached_state.timestamp = int(time())
-        cached_state.attrs["temp_set"] = target_temp
-
-    async def airjet_spa_set_locked(self, device_id: str, locked: bool) -> None:
-        """Lock or unlock the physical control panel on a spa device."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        api_value = 1 if locked else 0
-        _LOGGER.debug("Setting lock state to %s", "ON" if locked else "OFF")
-        await self._do_control_post(device_id, locked=api_value)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["locked"] = api_value
+        cached_state.attrs["Temperature_setup"] = target_temp
 
     async def airjet_spa_set_bubbles(self, device_id: str, bubbles: bool) -> None:
         """Turn the bubbles on/off on an Airjet spa device."""
@@ -306,126 +294,11 @@ class WavespaApi:
             raise WavespaException(f"Device '{device_id}' is not recognised")
 
         _LOGGER.debug("Setting bubbles mode to %s", "ON" if bubbles else "OFF")
-        await self._do_control_post(device_id, wave_power=1 if bubbles else 0)
+        await self._do_control_post(device_id, Bubble=1 if bubbles else 0)
         cached_state.timestamp = int(time())
-        cached_state.attrs["wave_power"] = bubbles
+        cached_state.attrs["Bubble"] = bubbles
         if bubbles:
-            cached_state.attrs["spa_power"] = 1
-
-    async def airjet_v01_spa_set_bubbles(
-        self, device_id: str, bubbles: BubblesLevel
-    ) -> None:
-        """Control the bubbles on an Airjet V01 spa device."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        api_value = AIRJET_V01_BUBBLES_MAP.to_api_value(bubbles)
-        _LOGGER.debug("Setting bubbles mode to %d", api_value)
-        await self._do_control_post(device_id, wave=api_value)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["wave"] = api_value
-        if bubbles != BubblesLevel.OFF:
-            cached_state.attrs["power"] = 1
-
-    async def hydrojet_spa_set_power(self, device_id: str, power: bool) -> None:
-        """Turn the spa on/off."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        _LOGGER.debug("Setting power to %s", "ON" if power else "OFF")
-        await self._do_control_post(device_id, power=1 if power else 0)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["power"] = power
-        if not power:
-            # When powering off, all other functions also turn off
-            cached_state.attrs["filter"] = 0
-            cached_state.attrs["heat"] = 0
-            cached_state.attrs["wave"] = HYDROJET_BUBBLES_MAP.off_val
-
-    async def hydrojet_spa_set_filter(
-        self, device_id: str, filtering: HydrojetFilter
-    ) -> None:
-        """Turn the filter pump on/off on a spa device."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        _LOGGER.debug("Setting filter mode to %s", "ON" if filtering else "OFF")
-        await self._do_control_post(device_id, filter=filtering)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["filter"] = filtering
-        if filtering == HydrojetFilter.ON:
-            cached_state.attrs["power"] = 1
-        else:
-            cached_state.attrs["wave"] = HYDROJET_BUBBLES_MAP.off_val
-            cached_state.attrs["heat"] = 0
-
-    async def hydrojet_spa_set_heat(self, device_id: str, heat: HydrojetHeat) -> None:
-        """
-        Turn the heater on/off on a Hydrojet spa device.
-
-        Turning the heater on will also turn on the filter pump.
-        """
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        _LOGGER.debug("Setting heater mode to %s", "ON" if heat else "OFF")
-        await self._do_control_post(device_id, heat=heat)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["heat"] = heat
-        if heat == HydrojetHeat.ON:
-            cached_state.attrs["power"] = 1
-            cached_state.attrs["filter"] = HydrojetFilter.ON
-
-    async def hydrojet_spa_set_target_temp(
-        self, device_id: str, target_temp: int
-    ) -> None:
-        """Set the target temperature on a Hydrojet spa device."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        target_temp = int(target_temp)
-        _LOGGER.debug("Setting target temperature to %d", target_temp)
-        await self._do_control_post(device_id, Tset=target_temp)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["Tset"] = target_temp
-
-    async def hydrojet_spa_set_bubbles(
-        self, device_id: str, bubbles: BubblesLevel
-    ) -> None:
-        """Control the bubbles on a Hydrojet spa device."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        api_value = HYDROJET_BUBBLES_MAP.to_api_value(bubbles)
-        _LOGGER.debug("Setting bubbles mode to %d", api_value)
-        await self._do_control_post(device_id, wave=api_value)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["wave"] = api_value
-        if bubbles != BubblesLevel.OFF:
-            cached_state.attrs["power"] = 1
-
-    async def hydrojet_spa_set_jets(self, device_id: str, jets: bool) -> None:
-        """Control the jets on a Hydrojet spa device."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        api_value = 1 if jets else 0
-        _LOGGER.debug("Setting jets to %s", "ON" if jets else "OFF")
-        await self._do_control_post(device_id, jet=api_value)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["jet"] = api_value
-        if jets:
-            cached_state.attrs["power"] = 1
-
-    async def pool_filter_set_power(self, device_id: str, power: bool) -> None:
-        """Control power to a pump device."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        _LOGGER.debug("Setting power to %s", "ON" if power else "OFF")
-        await self._do_control_post(device_id, power=1 if power else 0)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["power"] = power
+            cached_state.attrs["Heater"] = 1
 
     async def pool_filter_set_time(self, device_id: str, hours: int) -> None:
         """Set filter timeout for for pool devices."""

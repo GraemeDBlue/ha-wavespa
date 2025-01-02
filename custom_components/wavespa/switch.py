@@ -14,7 +14,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WavespaUpdateCoordinator
 from .wavespa.api import WavespaApi
-from .wavespa.model import WavespaDeviceStatus, WavespaDeviceType, HydrojetFilter
+from .wavespa.model import WavespaDeviceStatus, WavespaDeviceType
 from .const import DOMAIN, Icon
 from .entity import WavespaEntity
 
@@ -34,10 +34,10 @@ class WavespaSwitchEntityDescription(SwitchEntityDescription, SwitchFunctionsMix
 
 
 _AIRJET_SPA_POWER_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_power",
-    name="Spa Power",
+    key="spa_heater",
+    name="Spa Heater",
     icon=Icon.POWER,
-    value_fn=lambda s: bool(s.attrs["power"]),
+    value_fn=lambda s: bool(s.attrs["Heater"]),
     turn_on_fn=lambda api, device_id: api.airjet_spa_set_power(device_id, True),
     turn_off_fn=lambda api, device_id: api.airjet_spa_set_power(device_id, False),
 )
@@ -46,69 +46,19 @@ _AIRJET_SPA_FILTER_SWITCH = WavespaSwitchEntityDescription(
     key="spa_filter_power",
     name="Spa Filter",
     icon=Icon.FILTER,
-    value_fn=lambda s: bool(s.attrs["filter_power"]),
+    value_fn=lambda s: bool(s.attrs["Filter"]),
     turn_on_fn=lambda api, device_id: api.airjet_spa_set_filter(device_id, True),
     turn_off_fn=lambda api, device_id: api.airjet_spa_set_filter(device_id, False),
 )
 
 _AIRJET_SPA_BUBBLES_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_wave_power",
+    key="spa_bubbles_power",
     name="Spa Bubbles",
     icon=Icon.BUBBLES,
-    value_fn=lambda s: bool(s.attrs["wave_power"]),
+    value_fn=lambda s: bool(s.attrs["bubble"]),
     turn_on_fn=lambda api, device_id: api.airjet_spa_set_bubbles(device_id, True),
     turn_off_fn=lambda api, device_id: api.airjet_spa_set_bubbles(device_id, False),
 )
-
-_AIRJET_SPA_LOCK_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_locked",
-    name="Spa Locked",
-    icon=Icon.LOCK,
-    value_fn=lambda s: bool(s.attrs["locked"]),
-    turn_on_fn=lambda api, device_id: api.airjet_spa_set_locked(device_id, True),
-    turn_off_fn=lambda api, device_id: api.airjet_spa_set_locked(device_id, False),
-)
-
-_AIRJET_V01_HYDROJET_SPA_POWER_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_power",
-    name="Spa Power",
-    icon=Icon.POWER,
-    value_fn=lambda s: bool(s.attrs["power"]),
-    turn_on_fn=lambda api, device_id: api.hydrojet_spa_set_power(device_id, True),
-    turn_off_fn=lambda api, device_id: api.hydrojet_spa_set_power(device_id, False),
-)
-
-_AIRJET_V01_HYDROJET_SPA_FILTER_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_filter_power",
-    name="Spa Filter",
-    icon=Icon.FILTER,
-    value_fn=lambda s: bool(s.attrs["filter"] == 2),
-    turn_on_fn=lambda api, device_id: api.hydrojet_spa_set_filter(
-        device_id, HydrojetFilter.ON
-    ),
-    turn_off_fn=lambda api, device_id: api.hydrojet_spa_set_filter(
-        device_id, HydrojetFilter.OFF
-    ),
-)
-
-_HYDROJET_SPA_JETS_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_jets",
-    name="Spa Jets",
-    icon=Icon.JETS,
-    value_fn=lambda s: bool(s.attrs["jet"]),
-    turn_on_fn=lambda api, device_id: api.hydrojet_spa_set_jets(device_id, True),
-    turn_off_fn=lambda api, device_id: api.hydrojet_spa_set_jets(device_id, False),
-)
-
-_POOL_FILTER_POWER_SWITCH = WavespaSwitchEntityDescription(
-    key="pool_filter_power",
-    name="Pool Filter Power",
-    icon=Icon.FILTER,
-    value_fn=lambda s: bool(s.attrs["power"]),
-    turn_on_fn=lambda api, device_id: api.pool_filter_set_power(device_id, True),
-    turn_off_fn=lambda api, device_id: api.pool_filter_set_power(device_id, False),
-)
-
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -125,7 +75,10 @@ async def async_setup_entry(
             entities.extend(
                 [
                     WavespaSwitch(
-                        coordinator, config_entry, device_id, _AIRJET_SPA_POWER_SWITCH
+                        coordinator,
+                        config_entry,
+                        device_id,
+                        _AIRJET_SPA_POWER_SWITCH
                     ),
                     WavespaSwitch(
                         coordinator,
@@ -139,66 +92,6 @@ async def async_setup_entry(
                         device_id,
                         _AIRJET_SPA_BUBBLES_SWITCH,
                     ),
-                    WavespaSwitch(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _AIRJET_SPA_LOCK_SWITCH,
-                    ),
-                ]
-            )
-
-        if device.device_type == WavespaDeviceType.AIRJET_V01_SPA:
-            entities.extend(
-                [
-                    WavespaSwitch(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _AIRJET_V01_HYDROJET_SPA_POWER_SWITCH,
-                    ),
-                    WavespaSwitch(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _AIRJET_V01_HYDROJET_SPA_FILTER_SWITCH,
-                    ),
-                ]
-            )
-
-        if device.device_type in [
-            WavespaDeviceType.HYDROJET_SPA,
-            WavespaDeviceType.HYDROJET_PRO_SPA,
-        ]:
-            entities.extend(
-                [
-                    WavespaSwitch(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _AIRJET_V01_HYDROJET_SPA_POWER_SWITCH,
-                    ),
-                    WavespaSwitch(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _AIRJET_V01_HYDROJET_SPA_FILTER_SWITCH,
-                    ),
-                    WavespaSwitch(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _HYDROJET_SPA_JETS_SWITCH,
-                    ),
-                ]
-            )
-
-        if device.device_type == WavespaDeviceType.POOL_FILTER:
-            entities.extend(
-                [
-                    WavespaSwitch(
-                        coordinator, config_entry, device_id, _POOL_FILTER_POWER_SWITCH
-                    )
                 ]
             )
 

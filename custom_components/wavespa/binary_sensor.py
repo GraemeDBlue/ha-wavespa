@@ -67,9 +67,6 @@ async def async_setup_entry(
     for device_id, device in coordinator.api.devices.items():
         if device.device_type in [
             WavespaDeviceType.AIRJET_SPA,
-            WavespaDeviceType.AIRJET_V01_SPA,
-            WavespaDeviceType.HYDROJET_SPA,
-            WavespaDeviceType.HYDROJET_PRO_SPA,
         ]:
             entities.extend(
                 [
@@ -84,27 +81,6 @@ async def async_setup_entry(
                         config_entry,
                         device_id,
                         _SPA_ERRORS_SENSOR_DESCRIPTION,
-                    ),
-                ]
-            )
-
-        if device.device_type == WavespaDeviceType.POOL_FILTER:
-            entities.extend(
-                [
-                    DeviceConnectivitySensor(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _POOL_FILTER_CONNECTIVITY_SENSOR_DESCRIPTION,
-                    ),
-                    PoolFilterChangeRequiredSensor(
-                        coordinator, config_entry, device_id
-                    ),
-                    DeviceErrorsSensor(
-                        coordinator,
-                        config_entry,
-                        device_id,
-                        _POOL_FILTER_ERROR_SENSOR_DESCRIPTION,
                     ),
                 ]
             )
@@ -230,4 +206,4 @@ class PoolFilterChangeRequiredSensor(WavespaEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if the spa is online."""
-        return self.status is not None and self.status.attrs["filter"]
+        return self.status is not None and self.status.attrs["Filter"]

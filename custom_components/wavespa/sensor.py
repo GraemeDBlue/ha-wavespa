@@ -39,8 +39,6 @@ async def async_setup_entry(
         name_prefix = "Wavespa"
         if device_info.device_type in [
             WavespaDeviceType.AIRJET_SPA,
-            WavespaDeviceType.HYDROJET_SPA,
-            WavespaDeviceType.HYDROJET_PRO_SPA,
         ]:
             name_prefix = "Spa"
         elif device_info.device_type == WavespaDeviceType.POOL_FILTER:
