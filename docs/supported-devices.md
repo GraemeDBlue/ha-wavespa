@@ -8,18 +8,11 @@ Raise an issue or log a pull request to update this list. Please do not suggest 
 
 | Model                                 | Protocol     |
 | ------------------------------------- | ------------ |
-| Lay-Z-Spa Dominica HydroJet           | Hydrojet     |
-| Lay-Z-Spa Maldives HydroJet Pro       | Hydrojet_Pro |
-| Lay-Z-Spa Milan AirJet Plus           | Airjet       |
-| SaluSpa Coronado EnergySense          | Airjet_V01   |
-| Wavespa Smart Touch Wi-Fi Filter Pump | Pool Filter  |
+| Wave Spa Garda                        | Airjet       |
 
 ## Protocol support
 
 | Protocol     | Supported          |
 | ------------ | ------------------ |
 | Airjet       | :white_check_mark: |
-| Airjet_V01   | :white_check_mark: |
-| Hydrojet     | :white_check_mark: |
-| Hydrojet_Pro | :white_check_mark: |
-| Pool Filter  | :white_check_mark: |
+

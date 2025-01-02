@@ -27,7 +27,7 @@ class WavespaDeviceType(Enum):
         """Get the enum value based on the 'product_name' field in the API response."""
 
         if product_name == "Wave_SPA_EU":
-            return WavespaDeviceType.Wave_SPA_EU
+            return WavespaDeviceType.AIRJET_SPA
         return WavespaDeviceType.UNKNOWN
 
 
