@@ -77,7 +77,7 @@ class AirjetSpaThermostat(WavespaEntity, ClimateEntity):
         if not self.status:
             return None
         heat_on = self.status.attrs["Heater"]
-        target_reached = self.status.attrs["Temperature_setup"]
+        target_reached = (int(self.status.attrs["Temperature_setup"]) == int(self.status.attrs["Current_temperature"]))
         return (
             HVACAction.HEATING if (heat_on and not target_reached) else HVACAction.IDLE
         )
