@@ -1,13 +1,13 @@
 {
   "domain": "wavespa",
   "name": "Wavespa",
-  "codeowners": ["@cdpuk"],
+  "codeowners": ["@GraemeDBlue"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/cdpuk/ha-wavespa",
+  "documentation": "https://github.com/GraemeDBlue/ha-wavespa",
   "integration_type": "device",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/cdpuk/ha-wavespa/issues",
+  "issue_tracker": "https://github.com/GraemeDBlue/ha-wavespa/issues",
   "requirements": [],
   "version": "1.6.2"
 }
