@@ -12,8 +12,6 @@ from typing import Any
 from aiohttp import ClientResponse, ClientSession
 
 from .model import (
-    AIRJET_V01_BUBBLES_MAP,
-    HYDROJET_BUBBLES_MAP,
     WavespaDevice,
     WavespaDeviceStatus,
     WavespaDeviceType,
@@ -26,7 +24,7 @@ from .model import (
 _LOGGER = getLogger(__name__)
 _HEADERS = {
     "Content-type": "application/json; charset=UTF-8",
-    "X-Gizwits-Application-Id": "78a879318939402b9c70819d918ef8e",
+    "X-Gizwits-Application-Id": "78a879318939402b9c70819d918ef8ed",
 }
 _TIMEOUT = 10
 
@@ -253,9 +251,9 @@ class WavespaApi:
         cached_state.timestamp = int(time())
         cached_state.attrs["Filter"] = api_value
         if filtering:
-            cached_state.attrs["Heater"] = 0
+            cached_state.attrs["Filter"] = 1
         else:
-            cached_state.attrs["Bubbles"] = 0
+            cached_state.attrs["Bubble"] = 0
             cached_state.attrs["Heater"] = 0
 
     async def airjet_spa_set_heat(self, device_id: str, heat: bool) -> None:
@@ -288,6 +286,17 @@ class WavespaApi:
         cached_state.timestamp = int(time())
         cached_state.attrs["Temperature_setup"] = target_temp
 
+    async def airjet_spa_set_locked(self, device_id: str, locked: bool) -> None:
+        """Lock or unlock the physical control panel on a spa device."""
+        if (cached_state := self._state_cache.get(device_id)) is None:
+            raise WavespaException(f"Device '{device_id}' is not recognised")
+
+        api_value = 1 if locked else 0
+        _LOGGER.debug("Setting lock state to %s", "ON" if locked else "OFF")
+        await self._do_control_post(device_id, ocked=api_value)
+        cached_state.timestamp = int(time())
+        cached_state.attrs["locked"] = api_value
+
     async def airjet_spa_set_bubbles(self, device_id: str, bubbles: bool) -> None:
         """Turn the bubbles on/off on an Airjet spa device."""
         if (cached_state := self._state_cache.get(device_id)) is None:
@@ -299,16 +308,6 @@ class WavespaApi:
         cached_state.attrs["Bubble"] = bubbles
         if bubbles:
             cached_state.attrs["Heater"] = 1
-
-    async def pool_filter_set_time(self, device_id: str, hours: int) -> None:
-        """Set filter timeout for for pool devices."""
-        if (cached_state := self._state_cache.get(device_id)) is None:
-            raise WavespaException(f"Device '{device_id}' is not recognised")
-
-        _LOGGER.debug("Setting filter timeout to %d hours", hours)
-        await self._do_control_post(device_id, time=hours)
-        cached_state.timestamp = int(time())
-        cached_state.attrs["time"] = hours
 
     async def _do_get(self, url: str) -> dict[str, Any]:
         """Make an API call to the specified URL, returning the response as a JSON object."""

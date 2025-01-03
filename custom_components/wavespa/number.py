@@ -9,7 +9,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WavespaUpdateCoordinator
-from .wavespa.model import WavespaDeviceType
 from .const import DOMAIN
 from .entity import WavespaEntity
 
@@ -28,16 +27,8 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up number entities."""
-    coordinator: WavespaUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
     entities: list[WavespaEntity] = []
 
-    for device_id, device in coordinator.api.devices.items():
-        if device.device_type == WavespaDeviceType.POOL_FILTER:
-            entities.append(
-                PoolFilterTimeNumber(
-                    coordinator, config_entry, device_id, _POOL_FILTER_TIME
-                )
-            )
     async_add_entities(entities)
 
 

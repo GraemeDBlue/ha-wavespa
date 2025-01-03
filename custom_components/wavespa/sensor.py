@@ -36,13 +36,11 @@ async def async_setup_entry(
     entities: list[WavespaEntity] = []
 
     for device_id, device_info in coordinator.api.devices.items():
-        name_prefix = "Wavespa"
+        name_prefix = "Default"
         if device_info.device_type in [
-            WavespaDeviceType.AIRJET_SPA,
+            WavespaDeviceType.WAVESPA_EU,
         ]:
-            name_prefix = "Spa"
-        elif device_info.device_type == WavespaDeviceType.POOL_FILTER:
-            name_prefix = "Pool Filter"
+            name_prefix = "WaveSpa"
 
         entities.extend(
             [

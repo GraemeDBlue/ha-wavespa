@@ -13,9 +13,14 @@ This custom component integrates with the Wavespa cloud API, providing control o
   <img src="images/demo-diagnostic.png" width="200" />
 </p>
 
+## Foreword
+
+Thank you to the bestway integration and various HA forum posts for pointers so I could reverese engineer this to work
+Most of the words in this Readem come from the Bestway integration I forked from 
+
 ## Required Account
 
-You must have an account with the Wavespa mobile app ([Android][wavespa-android]/[iOS][wavespa-ios]). Lay-Z-Spa app credentials will not work. Both apps appear to have identical feature sets.
+You must have an account with the Wavespa mobile app Lay-Z-Spa app credentials will not work. Both apps appear to have identical feature sets.
 
 Wavespa uses different API endpoints for EU and US. If you get an error stating account could not be found, try using the other endpoint. If this does not help, then create a new account under a supported country.
 
@@ -30,7 +35,7 @@ See the [supported devices](docs/supported-devices.md) list for more details.
 This integration is delivered as a HACS custom repository.
 
 1. Download and install [HACS][hacs-download].
-2. Add a [custom repository][hacs-custom] in HACS. You will need to enter the URL of this repository when prompted: `https://github.com/cdpuk/ha-wavespa`.
+2. Add a [custom repository][hacs-custom] in HACS. You will need to enter the URL of this repository when prompted: `https://github.com/GraemeDBlue/ha-wavespa`.
 
 ## Configuration
 
@@ -54,20 +59,19 @@ Achieve faster (or even local) updates.
 
 ## Acknowledgements
 
+- https://github.com/cdpuk/ha-bestway
 - https://github.com/B-Hartley/bruces_homeassistant_config
 
 ## Contributing
 
 If you want to contribute to this please read the [Contribution Guidelines](CONTRIBUTING.md).
 
-[commits-shield]: https://img.shields.io/github/commit-activity/y/cdpuk/ha-wavespa.svg?style=for-the-badge
-[commits]: https://github.com/cdpuk/ha-wavespa/commits/main
+[commits-shield]: https://img.shields.io/github/commit-activity/y/GraemeDBlue/ha-wavespa.svg?style=for-the-badge
+[commits]: https://github.com/GraemeDBlue/ha-wavespa/commits/main
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
-[license-shield]: https://img.shields.io/github/license/cdpuk/ha-wavespa.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/cdpuk/ha-wavespa.svg?style=for-the-badge
-[releases]: https://github.com/cdpuk/ha-wavespa/releases
+[license-shield]: https://img.shields.io/github/license/GraemeDBlue/ha-wavespa.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/GraemeDBlue/ha-wavespa.svg?style=for-the-badge
+[releases]: https://github.com/GraemeDBlue/ha-wavespa/releases
 [hacs-download]: https://hacs.xyz/docs/setup/download
 [hacs-custom]: https://hacs.xyz/docs/faq/custom_repositories
-[wavespa-android]: https://play.google.com/store/apps/details?id=com.layzspa.smartHome
-[wavespa-ios]: https://apps.apple.com/us/app/wavespa-smart-hub/id1456731336
