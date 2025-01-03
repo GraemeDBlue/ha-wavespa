@@ -38,8 +38,8 @@ async def async_setup_entry(
     entities: list[WavespaEntity] = []
 
     for device_id, device in coordinator.api.devices.items():
-        # if device.device_type == WavespaDeviceType.AIRJET_SPA:
-        entities.append(AirjetSpaThermostat(coordinator, config_entry, device_id))
+        if device.device_type == WavespaDeviceType.WAVESPA_EU:
+            entities.append(AirjetSpaThermostat(coordinator, config_entry, device_id))
 
     async_add_entities(entities)
 
