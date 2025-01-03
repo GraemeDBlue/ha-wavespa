@@ -5,7 +5,7 @@
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
 
-This custom component integrates with the Wavespa cloud API, providing control of devices such as Lay-Z-Spa hot tubs and Flowclear pool filters.
+This custom component integrates with the Wavespa cloud API, providing control of devices such as WaveSpa Garda hot tubs.
 
 <p float="left">
   <img src="images/demo-thermostat.png" width="200" />
