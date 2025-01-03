@@ -13,6 +13,10 @@ This custom component integrates with the Wavespa cloud API, providing control o
   <img src="images/demo-diagnostic.png" width="200" />
 </p>
 
+## Foreword
+
+Thank you to the bestway integration and various HA forum posts for pointers so I could reverese engineer this to work 
+
 ## Required Account
 
 You must have an account with the Wavespa mobile app ([Android][wavespa-android]/[iOS][wavespa-ios]). Lay-Z-Spa app credentials will not work. Both apps appear to have identical feature sets.
@@ -54,6 +58,7 @@ Achieve faster (or even local) updates.
 
 ## Acknowledgements
 
+- https://github.com/cdpuk/ha-bestway
 - https://github.com/B-Hartley/bruces_homeassistant_config
 
 ## Contributing

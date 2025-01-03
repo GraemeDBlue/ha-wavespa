@@ -34,8 +34,8 @@ class WavespaSwitchEntityDescription(SwitchEntityDescription, SwitchFunctionsMix
 
 
 _AIRJET_SPA_POWER_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_heater",
-    name="Spa Heater",
+    key="Heater",
+    name="Heater",
     icon=Icon.POWER,
     value_fn=lambda s: bool(s.attrs["Heater"]),
     turn_on_fn=lambda api, device_id: api.airjet_spa_set_power(device_id, True),
@@ -43,8 +43,8 @@ _AIRJET_SPA_POWER_SWITCH = WavespaSwitchEntityDescription(
 )
 
 _AIRJET_SPA_FILTER_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_filter_power",
-    name="Spa Filter",
+    key="Filter",
+    name="Filter",
     icon=Icon.FILTER,
     value_fn=lambda s: bool(s.attrs["Filter"]),
     turn_on_fn=lambda api, device_id: api.airjet_spa_set_filter(device_id, True),
@@ -52,12 +52,21 @@ _AIRJET_SPA_FILTER_SWITCH = WavespaSwitchEntityDescription(
 )
 
 _AIRJET_SPA_BUBBLES_SWITCH = WavespaSwitchEntityDescription(
-    key="spa_bubbles_power",
-    name="Spa Bubbles",
+    key="Bubble",
+    name="Bubbles",
     icon=Icon.BUBBLES,
-    value_fn=lambda s: bool(s.attrs["bubble"]),
+    value_fn=lambda s: bool(s.attrs["Bubble"]),
     turn_on_fn=lambda api, device_id: api.airjet_spa_set_bubbles(device_id, True),
     turn_off_fn=lambda api, device_id: api.airjet_spa_set_bubbles(device_id, False),
+)
+
+_AIRJET_SPA_LOCK_SWITCH = WavespaSwitchEntityDescription(
+    key="spa_locked",
+    name="Spa Locked",
+    icon=Icon.LOCK,
+    value_fn=lambda s: bool(s.attrs["locked"]),
+    turn_on_fn=lambda api, device_id: api.airjet_spa_set_locked(device_id, True),
+    turn_off_fn=lambda api, device_id: api.airjet_spa_set_locked(device_id, False),
 )
 
 async def async_setup_entry(
@@ -71,7 +80,7 @@ async def async_setup_entry(
     entities: list[WavespaEntity] = []
 
     for device_id, device in coordinator.api.devices.items():
-        if device.device_type == WavespaDeviceType.AIRJET_SPA:
+        if device.device_type == WavespaDeviceType.WAVESPA_EU:
             entities.extend(
                 [
                     WavespaSwitch(

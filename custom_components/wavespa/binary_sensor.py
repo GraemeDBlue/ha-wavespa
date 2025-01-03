@@ -35,26 +35,6 @@ _SPA_ERRORS_SENSOR_DESCRIPTION = BinarySensorEntityDescription(
     device_class=BinarySensorDeviceClass.PROBLEM,
 )
 
-_POOL_FILTER_CONNECTIVITY_SENSOR_DESCRIPTION = BinarySensorEntityDescription(
-    key="pool_filter_connected",
-    device_class=BinarySensorDeviceClass.CONNECTIVITY,
-    entity_category=EntityCategory.DIAGNOSTIC,
-    name="Pool Filter Connected",
-)
-
-_POOL_FILTER_CHANGE_SENSOR_DESCRIPTION = BinarySensorEntityDescription(
-    key="pool_filter_change_required",
-    name="Pool Filter Change Required",
-    icon=Icon.FILTER,
-)
-
-_POOL_FILTER_ERROR_SENSOR_DESCRIPTION = BinarySensorEntityDescription(
-    key="pool_filter_has_error",
-    name="Pool Filter Errors",
-    device_class=BinarySensorDeviceClass.PROBLEM,
-)
-
-
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -66,7 +46,7 @@ async def async_setup_entry(
 
     for device_id, device in coordinator.api.devices.items():
         if device.device_type in [
-            WavespaDeviceType.AIRJET_SPA,
+            WavespaDeviceType.WAVESPA_EU,
         ]:
             entities.extend(
                 [
@@ -182,28 +162,3 @@ class DeviceErrorsSensor(WavespaEntity, BinarySensorEntity):
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return more detailed error information."""
         return self._all_error_properties()
-
-
-class PoolFilterChangeRequiredSensor(WavespaEntity, BinarySensorEntity):
-    """Sensor to indicate whether a pool filter requires a change."""
-
-    def __init__(
-        self,
-        coordinator: WavespaUpdateCoordinator,
-        config_entry: ConfigEntry,
-        device_id: str,
-    ) -> None:
-        """Initialize sensor."""
-        self.entity_description = _POOL_FILTER_CHANGE_SENSOR_DESCRIPTION
-        self._attr_entity_category = EntityCategory.DIAGNOSTIC
-        self._attr_unique_id = f"{device_id}_{self.entity_description.key}"
-        super().__init__(
-            coordinator,
-            config_entry,
-            device_id,
-        )
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if the spa is online."""
-        return self.status is not None and self.status.attrs["Filter"]

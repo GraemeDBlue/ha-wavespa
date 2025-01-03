@@ -14,12 +14,7 @@ _LOGGER = getLogger(__name__)
 class WavespaDeviceType(Enum):
     """Wavespa device types."""
 
-    Wave_SPA_EU = "Wave_SPA_EU"
-    AIRJET_SPA = "Airjet"
-    AIRJET_V01_SPA = "Airjet V01"
-    HYDROJET_SPA = "Hydrojet"
-    HYDROJET_PRO_SPA = "Hydrojet Pro"
-    POOL_FILTER = "Pool Filter"
+    WAVESPA_EU = "Wave_SPA_EU"
     UNKNOWN = "Unknown"
 
     @staticmethod
@@ -27,7 +22,7 @@ class WavespaDeviceType(Enum):
         """Get the enum value based on the 'product_name' field in the API response."""
 
         if product_name == "Wave_SPA_EU":
-            return WavespaDeviceType.AIRJET_SPA
+            return WavespaDeviceType.WAVESPA_EU
         return WavespaDeviceType.UNKNOWN
 
 

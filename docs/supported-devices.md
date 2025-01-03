@@ -8,11 +8,11 @@ Raise an issue or log a pull request to update this list. Please do not suggest 
 
 | Model                                 | Protocol     |
 | ------------------------------------- | ------------ |
-| Wave Spa Garda                        | Airjet       |
+| Wave Spa Garda                        | standard     |
 
 ## Protocol support
 
 | Protocol     | Supported          |
 | ------------ | ------------------ |
-| Airjet       | :white_check_mark: |
+| standard     | :white_check_mark: |
 
