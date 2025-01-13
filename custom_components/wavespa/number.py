@@ -56,6 +56,6 @@ class PoolFilterTimeNumber(WavespaEntity, NumberEntity):
                 return hours
         return None
 
-    async def async_set_native_value(self, value: float) -> None:
-        """Update the current value."""
-        await self.coordinator.api.pool_filter_set_time(self.device_id, int(value))
+    # async def async_set_native_value(self, value: float) -> None:
+    #     """Update the current value."""
+    #     await self.coordinator.api.pool_filter_set_time(self.device_id, int(value))
