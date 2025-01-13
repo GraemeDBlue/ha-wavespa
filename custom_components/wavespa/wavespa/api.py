@@ -25,6 +25,8 @@ _LOGGER = getLogger(__name__)
 _HEADERS = {
     "Content-type": "application/json; charset=UTF-8",
     "X-Gizwits-Application-Id": "78a879318939402b9c70819d918ef8ed",
+    "User-Agent": "okhttp/5.0.0-alpha.3",
+    "Connection": "Keep-Alive"
 }
 _TIMEOUT = 10
 
