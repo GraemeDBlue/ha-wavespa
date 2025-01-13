@@ -25,6 +25,7 @@ class WavespaUpdateCoordinator(DataUpdateCoordinator[WavespaApiResults]):
         )
         self.api = api
 
+    ## fix from https://github.com/cdpuk/ha-bestway/issues/86
     async def _async_update_data(self) -> WavespaApiResults:
         """Fetch data from API endpoint.
 
@@ -32,5 +33,12 @@ class WavespaUpdateCoordinator(DataUpdateCoordinator[WavespaApiResults]):
         so entities can quickly look up their data.
         """
         async with asyncio.timeout(10):
-            await self.api.refresh_bindings()
+            try:
+                await self.api.refresh_bindings()
+            except Exception as e:
+                # Log the error if necessary or just pass to silently ignore
+                # You can log it with your logging system like:
+                # _LOGGER.error(f"Failed to refresh bindings: {e}")
+                pass  # Ignore failures on refresh_bindings
+
             return await self.api.fetch_data()
