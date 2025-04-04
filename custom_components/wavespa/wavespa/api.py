@@ -206,8 +206,12 @@ class WavespaApi:
             _LOGGER.debug("New data received for device %s", did)
             device_attrs = latest_data["attr"]
             self._state_cache[did] = WavespaDeviceStatus(
-                latest_data["updated_at"], device_attrs
+                latest_data["updated_at"],
+                device_attrs,
+                device_info
             )
+
+            self._state_cache[did].time_filter = device_attrs["Time_filter"]
 
             attr_dump = json.dumps(device_attrs)
 

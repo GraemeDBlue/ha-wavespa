@@ -10,8 +10,13 @@ from typing import Any
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
-    BinarySensorEntityDescription,
+    BinarySensorEntityDescription
 )
+
+from homeassistant.components.number import (
+        NumberDeviceClass,
+)
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
@@ -33,6 +38,13 @@ _SPA_ERRORS_SENSOR_DESCRIPTION = BinarySensorEntityDescription(
     key="spa_has_error",
     name="Spa Errors",
     device_class=BinarySensorDeviceClass.PROBLEM,
+)
+
+_SPA_CONNECTIVITY_SENSOR_FILTER_TIMER = BinarySensorEntityDescription(
+    key="time_filter",
+    device_class=BinarySensorDeviceClass.CONNECTIVITY,
+    entity_category=EntityCategory.DIAGNOSTIC,
+    name="Time Filter",
 )
 
 async def async_setup_entry(
@@ -62,6 +74,13 @@ async def async_setup_entry(
                         device_id,
                         _SPA_ERRORS_SENSOR_DESCRIPTION,
                     ),
+                    DeviceFilterSensor(
+                        coordinator,
+                        config_entry,
+                        device_id,
+                        _SPA_CONNECTIVITY_SENSOR_FILTER_TIMER,
+
+                    )
                 ]
             )
 
