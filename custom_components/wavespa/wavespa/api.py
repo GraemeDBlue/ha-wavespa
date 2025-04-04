@@ -211,7 +211,9 @@ class WavespaApi:
                 device_info
             )
 
-            self._state_cache[did].time_filter = device_attrs["Time_filter"]
+            # Update the cached state with the latest data
+            if (device_attrs["Time_filter"]) is not None:
+                self._state_cache[did].time_filter = device_attrs["Time_filter"]
 
             attr_dump = json.dumps(device_attrs)
 
