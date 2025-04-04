@@ -162,4 +162,3 @@ class DeviceErrorsSensor(WavespaEntity, BinarySensorEntity):
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return more detailed error information."""
         return self._all_error_properties()
-    
