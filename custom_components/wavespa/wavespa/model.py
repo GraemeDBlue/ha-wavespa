@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, IntEnum, auto
 from logging import getLogger
-
 from typing import Any
 
 _LOGGER = getLogger(__name__)
@@ -118,6 +117,35 @@ HYDROJET_BUBBLES_MAP = BubblesMapping(BV(0), BV(40), BV(100))
 
 
 @dataclass
+class WavespaDeviceStatus:
+    """A snapshot of the status of a spa (i.e. Lay-Z-Spa) device."""
+
+    timestamp: int
+    attrs: dict[str, Any]
+    _device: WavespaDevice
+
+    @property
+    def time_filter(self) -> int | None:
+        """Calculate and return the time filter percentage based on API attributes."""
+        if self._device.time_filter is None:
+            return None
+        return self._device.time_filter
+
+    @time_filter.setter
+    def time_filter(self, value: int) -> None:
+        """Set the time filter value in the parent device."""
+        _LOGGER.debug(
+            "Setting time filter to %d for device %s", value, self._device.device_id
+        )
+        self._device.time_filter = value
+
+    @property
+    def percent_filter(self) -> int | None:
+        """Get the time filter percentage from the parent device."""
+        return self._device.time_percent
+
+
+@dataclass
 class WavespaDevice:
     """A device under a user's account."""
 
@@ -130,19 +158,38 @@ class WavespaDevice:
     wifi_soft_version: str
     wifi_hard_version: str
     is_online: bool
+    _time_filter: int | None = None  # Internal storage for time filter
 
     @property
     def device_type(self) -> WavespaDeviceType:
         """Get the derived device type."""
         return WavespaDeviceType.from_api_product_name(self.product_name)
 
+    @property
+    def time_filter(self) -> int | None:
+        """Get the time filter value for the device."""
+        return self._time_filter
 
-@dataclass
-class WavespaDeviceStatus:
-    """A snapshot of the status of a spa (i.e. Lay-Z-Spa) device."""
+    @time_filter.setter
+    def time_filter(self, value: int | None) -> None:
+        """Set the time filter value for the device."""
+        if value is not None and (value < 0 or value > 10200):
+            raise ValueError("time_filter must be between 0 and 10200")
+        _LOGGER.debug("Setting time filter to %d for device %s", value, self.device_id)
+        self._time_filter = value
 
-    timestamp: int
-    attrs: dict[str, Any]
+    @property
+    def time_percent(self) -> int | None:
+        """Get the time filter percentage for the device."""
+        if self._time_filter is None:
+            return None
+        return self.format_time_filter(self._time_filter)
+
+    @staticmethod
+    def format_time_filter(time_filter: int) -> int:
+        """Convert a time filter value to a percentage."""
+        percent = 100 - ((time_filter / 10200) * 100)
+        return max(0, min(100, int(percent)))
 
 
 @dataclass

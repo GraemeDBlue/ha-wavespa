@@ -16,7 +16,7 @@ This custom component integrates with the Wavespa cloud API, providing control o
 ## Foreword
 
 Thank you to the bestway integration and various HA forum posts for pointers so I could reverese engineer this to work
-Most of the words in this Readem come from the Bestway integration I forked from 
+Most of the words in this Readme come from the Bestway integration I forked from 
 
 ## Required Account
 

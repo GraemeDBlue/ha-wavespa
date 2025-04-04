@@ -19,7 +19,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WavespaUpdateCoordinator
 from .wavespa.model import WavespaDeviceType
-from .const import DOMAIN, Icon
+from .const import DOMAIN
 from .entity import WavespaEntity
 
 _SPA_CONNECTIVITY_SENSOR_DESCRIPTION = BinarySensorEntityDescription(

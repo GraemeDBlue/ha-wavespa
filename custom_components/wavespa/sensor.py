@@ -13,9 +13,9 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 
 from . import WavespaUpdateCoordinator
-from .wavespa.model import WavespaDevice, WavespaDeviceType
 from .const import DOMAIN, Icon
 from .entity import WavespaEntity
+from .wavespa.model import WavespaDevice, WavespaDeviceType
 
 
 @dataclass
@@ -112,6 +112,21 @@ async def async_setup_entry(
                             entity_category=EntityCategory.DIAGNOSTIC,
                         ),
                         lambda device: device.wifi_hard_version,
+                    ),
+                ),
+                DeviceSensor(
+                    coordinator,
+                    config_entry,
+                    device_id,
+                    sensor_description=DeviceSensorDescription(
+                        SensorEntityDescription(
+                            key="percent_filter",
+                            name=f"{name_prefix} Filter",
+                            icon=Icon.HARDWARE,
+                            entity_category=EntityCategory.DIAGNOSTIC,
+                            native_unit_of_measurement="%",
+                        ),
+                        lambda device: device.time_percent,
                     ),
                 ),
             ]
