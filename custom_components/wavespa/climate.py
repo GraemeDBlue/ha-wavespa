@@ -101,10 +101,10 @@ class AirjetSpaThermostat(WavespaEntity, ClimateEntity):
     @property
     def temperature_unit(self) -> str:
         """Return the unit of measurement used by the platform."""
-        if not self.status or self.status.attrs["Tunit"]:
+        # if not self.status or self.status.attrs["Tunit"]:
             return str(UnitOfTemperature.CELSIUS)
-        else:
-            return str(UnitOfTemperature.FAHRENHEIT)
+        # else:
+            # return str(UnitOfTemperature.FAHRENHEIT)
 
 
     @property
