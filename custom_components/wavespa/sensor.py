@@ -38,8 +38,9 @@ async def async_setup_entry(
     for device_id, device_info in coordinator.api.devices.items():
         name_prefix = "Default"
         if device_info.device_type in [
-            WavespaDeviceType.WAVESPA_EU,
+            WavespaDeviceType.WAVESPA_EU, WavespaDeviceType.WAVESPA_US,
         ]:
+
             name_prefix = "WaveSpa"
 
         entities.extend(

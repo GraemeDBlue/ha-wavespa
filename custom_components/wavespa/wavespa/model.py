@@ -14,6 +14,7 @@ class WavespaDeviceType(Enum):
     """Wavespa device types."""
 
     WAVESPA_EU = "Wave_SPA_EU"
+    WAVESPA_US = "Wave_SPA_US"
     UNKNOWN = "Unknown"
 
     @staticmethod
@@ -22,6 +23,8 @@ class WavespaDeviceType(Enum):
 
         if product_name == "Wave_SPA_EU":
             return WavespaDeviceType.WAVESPA_EU
+        elif product_name == "Wave_SPA_US":
+            return WavespaDeviceType.WAVESPA_US
         return WavespaDeviceType.UNKNOWN
 
 

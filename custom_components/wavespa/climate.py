@@ -38,7 +38,9 @@ async def async_setup_entry(
     entities: list[WavespaEntity] = []
 
     for device_id, device in coordinator.api.devices.items():
-        if device.device_type == WavespaDeviceType.WAVESPA_EU:
+        if device.device_type in [
+            WavespaDeviceType.WAVESPA_EU, WavespaDeviceType.WAVESPA_US,
+        ]:
             entities.append(AirjetSpaThermostat(coordinator, config_entry, device_id))
 
     async_add_entities(entities)
@@ -99,7 +101,11 @@ class AirjetSpaThermostat(WavespaEntity, ClimateEntity):
     @property
     def temperature_unit(self) -> str:
         """Return the unit of measurement used by the platform."""
-        return str(UnitOfTemperature.CELSIUS)
+        if not self.status or self.status.attrs["Tunit"]:
+            return str(UnitOfTemperature.CELSIUS)
+        else:
+            return str(UnitOfTemperature.FAHRENHEIT)
+
 
     @property
     def min_temp(self) -> float:

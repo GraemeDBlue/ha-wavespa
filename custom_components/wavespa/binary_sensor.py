@@ -46,7 +46,7 @@ async def async_setup_entry(
 
     for device_id, device in coordinator.api.devices.items():
         if device.device_type in [
-            WavespaDeviceType.WAVESPA_EU,
+            WavespaDeviceType.WAVESPA_EU, WavespaDeviceType.WAVESPA_US,
         ]:
             entities.extend(
                 [
