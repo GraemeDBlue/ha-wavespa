@@ -16,6 +16,9 @@ from .model import (
     WavespaDeviceStatus,
     WavespaDeviceType,
     WavespaUserToken,
+    BubblesLevel,
+    HydrojetFilter,
+    HydrojetHeat,
 )
 
 _LOGGER = getLogger(__name__)
