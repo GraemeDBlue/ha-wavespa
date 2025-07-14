@@ -23,10 +23,9 @@ class WavespaDeviceType(Enum):
 
         if product_name == "Wave_SPA_EU":
             return WavespaDeviceType.WAVESPA_EU
-        # elif product_name == "Wave_SPA_US":
-        #     return WavespaDeviceType.WAVESPA_US
-        else:
-            return WavespaDeviceType.UNKNOWN
+        if product_name == "Wave_SPA_US":
+            return WavespaDeviceType.WAVESPA_US
+        return WavespaDeviceType.UNKNOWN
 
 
 class TemperatureUnit(Enum):
