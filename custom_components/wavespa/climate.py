@@ -101,11 +101,13 @@ class AirjetSpaThermostat(WavespaEntity, ClimateEntity):
     @property
     def temperature_unit(self) -> str:
         """Return the unit of measurement used by the platform."""
-        # if not self.status or self.status.attrs["Tunit"]:
+        if not self.status:
             return str(UnitOfTemperature.CELSIUS)
-        # else:
-            # return str(UnitOfTemperature.FAHRENHEIT)
-
+        device_type = self.coordinator.api.devices[self.device_id].device_type
+        if device_type == WavespaDeviceType.WAVESPA_US:
+            return str(UnitOfTemperature.FAHRENHEIT)
+        # Default to Celsius for other device types
+        return str(UnitOfTemperature.CELSIUS)
 
     @property
     def min_temp(self) -> float:
