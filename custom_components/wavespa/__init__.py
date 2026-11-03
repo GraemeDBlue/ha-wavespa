@@ -47,13 +47,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     session = async_get_clientsession(hass)
 
-    # Check for an auth token
-    # If we have one that expires within 30 days, refresh it
-    expiry_cutoff = (datetime.now() + timedelta(days=30)).timestamp()
-
-    if user_token and expiry_cutoff < user_token_expiry:
-        _LOGGER.info("Reusing existing access token")
-    else:
+    async def async_refresh_token() -> WavespaApi:
+        """Request and persist a new API token."""
         _LOGGER.info("Requesting a new auth token")
         try:
             token = await WavespaApi.get_user_token(
@@ -73,9 +68,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.config_entries.async_update_entry(
             entry, data={**entry.data, **new_config_data}
         )
+        return WavespaApi(session, user_token, api_root)
 
-    api = WavespaApi(session, user_token, api_root)
-    coordinator = WavespaUpdateCoordinator(hass, api)
+    # Check for an auth token
+    # If we have one that expires within 30 days, refresh it
+    expiry_cutoff = (datetime.now() + timedelta(days=30)).timestamp()
+
+    if user_token and expiry_cutoff < user_token_expiry:
+        _LOGGER.info("Reusing existing access token")
+        api = WavespaApi(session, user_token, api_root)
+    else:
+        api = await async_refresh_token()
+
+    coordinator = WavespaUpdateCoordinator(hass, entry, api, async_refresh_token)
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
